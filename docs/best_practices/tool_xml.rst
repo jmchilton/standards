@@ -349,6 +349,29 @@ so:
 This will automatically fail the tool if the exit code is non-zero, or if the
 phrases ``error:`` or ``exception:`` appear in STDERR.
 
+Requirements for ``awk`` and ``grep``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the command uses ``awk``, add a ``gawk`` requirement. If it uses ``grep``,
+add a ``grep`` requirement.
+
+.. code:: xml
+
+    <requirements>
+        <requirement type="package" version="@TOOL_VERSION@">my_tool</requirement>
+        <requirement type="package" version="5.4.1">gawk</requirement>
+    </requirements>
+
+BioContainers images are built on a BusyBox base. Unless a requirement puts
+another ``awk`` or ``grep`` first on the ``PATH``, a tool running in one of these
+containers gets the BusyBox versions. Both exit 0 and print nothing when a write
+fails, for example when the disk is full, so the job ends ``ok`` with an empty or
+truncated output. Exit code detection and ``set -e`` cannot catch this. GNU
+``awk`` and ``grep`` exit non-zero. The other BusyBox commands commonly used in
+wrappers (``cat``, ``sort``, ``cut``, ``head``, ``tail``, ``sed``) also exit
+non-zero, so they need no extra requirement. The ``coreutils`` package does not
+provide ``awk`` or ``grep``.
+
 
 Help tag
 --------
